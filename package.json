@@ -7,8 +7,7 @@
     "dev": "pnpm --filter nextjs dev",
     "build": "pnpm --filter nextjs build",
     "test": "pnpm --filter nextjs test",
-    "typecheck": "pnpm --filter nextjs typecheck",
-    "lint": "pnpm --filter nextjs lint"
+    "typecheck": "pnpm --filter nextjs typecheck"
   },
   "packageManager": "pnpm@9.0.0"
 }
