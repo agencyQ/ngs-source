@@ -1,0 +1,33 @@
+name: Text
+machineName: text
+status: true
+required:
+  - textSize
+  - textColor
+props:
+  properties:
+    text:
+      type: string
+      title: Text
+      examples:
+        - Enter some text...
+    textSize:
+      type: string
+      enum:
+        - Extra Small
+        - Small
+        - Normal
+        - Large
+        - Extra Large
+      title: Text Size
+      examples:
+        - Normal
+    textColor:
+      type: string
+      enum:
+        - Dark
+        - Light
+      title: Text Color
+      examples:
+        - Dark
+slots: []

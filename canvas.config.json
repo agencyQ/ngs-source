@@ -1,0 +1,6 @@
+{
+  "componentDir": "./src/components",
+  "pagesDir": "./pages",
+  "aliasBaseDir": "src",
+  "globalCssPath": "./src/global.css"
+}
