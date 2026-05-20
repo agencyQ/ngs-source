@@ -1,0 +1,68 @@
+name: GitHub to Source
+
+on:
+  push:
+    paths:
+      - 'src/**'
+    branches:
+      - '**'
+
+concurrency:
+  group: github-to-source-${{ github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  upload-to-source-cms:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Derive secret prefix from branch
+        id: prefix
+        run: |
+          PREFIX=$(echo "${{ github.ref_name }}" | tr '[:lower:]' '[:upper:]')
+          echo "value=${PREFIX}__" >> "$GITHUB_OUTPUT"
+
+      - name: Check required secrets
+        id: check-secrets
+        run: |
+          if [ -z "$CANVAS_SITE_URL" ] || [ -z "$CANVAS_CLIENT_ID" ] || [ -z "$CANVAS_CLIENT_SECRET" ]; then
+            echo "Required secrets are not configured. Skipping."
+            echo "secrets_configured=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "secrets_configured=true" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          CANVAS_SITE_URL:
+            ${{ secrets[format('{0}CANVAS_SITE_URL',
+            steps.prefix.outputs.value)] }}
+          CANVAS_CLIENT_ID:
+            ${{ secrets[format('{0}CANVAS_CLIENT_ID',
+            steps.prefix.outputs.value)] }}
+          CANVAS_CLIENT_SECRET:
+            ${{ secrets[format('{0}CANVAS_CLIENT_SECRET',
+            steps.prefix.outputs.value)] }}
+
+      - uses: actions/checkout@v6
+        if: steps.check-secrets.outputs.secrets_configured == 'true'
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v6
+        if: steps.check-secrets.outputs.secrets_configured == 'true'
+        with:
+          node-version: '24'
+
+      - name: Push components to Source CMS
+        if: steps.check-secrets.outputs.secrets_configured == 'true'
+        run: npx @drupal-canvas/cli@0.11.2 push --yes
+        env:
+          CANVAS_SITE_URL:
+            ${{ secrets[format('{0}CANVAS_SITE_URL',
+            steps.prefix.outputs.value)] }}
+          CANVAS_CLIENT_ID:
+            ${{ secrets[format('{0}CANVAS_CLIENT_ID',
+            steps.prefix.outputs.value)] }}
+          CANVAS_CLIENT_SECRET:
+            ${{ secrets[format('{0}CANVAS_CLIENT_SECRET',
+            steps.prefix.outputs.value)] }}
