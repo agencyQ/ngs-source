@@ -1,0 +1,14 @@
+{
+  "name": "ngs-source",
+  "version": "0.0.1",
+  "private": true,
+  "description": "No Greater Sacrifice — Acquia Source + Next.js monorepo",
+  "scripts": {
+    "dev": "pnpm --filter nextjs dev",
+    "build": "pnpm --filter nextjs build",
+    "test": "pnpm --filter nextjs test",
+    "typecheck": "pnpm --filter nextjs typecheck",
+    "lint": "pnpm --filter nextjs lint"
+  },
+  "packageManager": "pnpm@9.0.0"
+}
